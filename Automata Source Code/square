@@ -1,0 +1,18 @@
+$states = 3
+$dimension = 2
+$radius = 1
+;
+
+int count = 0;
+boole flag = false;
+for( int i = 0; i < 9; i = i + 1){
+	if( neighborhood[i] == 1 & i != 4 ) flag = true;
+}
+
+if( neighborhood[4] == 1 ) return 2;
+if( neighborhood[4] == 2 ) return 0;
+if( flag ) return 1;
+return 0;
+
+
+

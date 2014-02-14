@@ -1,0 +1,956 @@
+package parser;
+
+import java_cup.runtime.*;
+//import java_cup.parser;
+
+import parser.parser_containers.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.Iterator;
+
+import java.io.File;
+
+import instruction.*;
+import instruction.Break.Condition;
+import instruction.Instruction.InstructionType;
+import instruction.Operator.Operation;
+import machine.VirtualMachine.VarType;
+
+import machine.VirtualMachine;
+import machine.*;
+import automata.Automata;
+
+init with {: 
+	
+	
+:}
+
+action code {: 
+	public Expression evaluatePETree( ExpressionNode node ){
+		Expression nodeExp = node.getExpression();
+		
+		if( node.hasChildren() ){ //internal (op) node
+			if( node.getRightNode() != null ){ //normal operation (OP R# R$ -> R%
+				if( node.getLeftNode().label() >= node.getRightNode().label() ){ //both (L>R) & (L=R) cases; perform L then R
+					Expression lExp = evaluatePETree( node.getLeftNode() );
+					Expression rExp = evaluatePETree( node.getRightNode());
+					Operator nodeOp = (Operator) node.partialInstruction();
+					
+					nodeExp.append( lExp.getInstructionList() );
+					nodeExp.append( rExp.getInstructionList() );
+					nodeExp.setResultLocation( this.parser.openReg.pop() );
+					
+					nodeOp.setSource1( lExp.getResultLocation() );
+					nodeOp.setSource2( rExp.getResultLocation() );
+					nodeOp.setDestination( nodeExp.getResultLocation() );
+					nodeExp.append( nodeOp );
+					
+					this.parser.openReg.push( lExp.getResultLocation() );
+					this.parser.openReg.push( rExp.getResultLocation() );
+					
+				} else { // (R>L) case; perform R then L
+					Expression rExp = evaluatePETree( node.getRightNode());
+					Expression lExp = evaluatePETree( node.getLeftNode() );
+					Operator nodeOp = (Operator) node.partialInstruction();
+					
+
+					nodeExp.append( rExp.getInstructionList() );
+					nodeExp.append( lExp.getInstructionList() );
+					nodeExp.setResultLocation( this.parser.openReg.pop() );
+					
+					nodeOp.setSource1( lExp.getResultLocation() );
+					nodeOp.setSource2( rExp.getResultLocation() );
+					nodeOp.setDestination( nodeExp.getResultLocation() );
+					nodeExp.append( nodeOp );
+					
+					this.parser.openReg.push( rExp.getResultLocation() );
+					this.parser.openReg.push( lExp.getResultLocation() );
+					
+					
+				}//end L/R comparison
+			} else { //single operand operation (NOT R# -> R$ ) or LdIn # R_Off -> R#
+				
+				Expression cExp = evaluatePETree( node.getLeftNode() );
+				nodeExp.append( cExp.getInstructionList() );
+				nodeExp.setResultLocation( this.parser.openReg.pop() );
+				
+				if( node.partialInstruction().getType() == InstructionType.OPERATOR ){
+					Operator nodeOp = (Operator) node.partialInstruction();
+					nodeOp.setSource1( cExp.getResultLocation() );
+					nodeOp.setDestination( nodeExp.getResultLocation() );
+					nodeExp.append( nodeOp );
+				} else if( node.partialInstruction().getType() == InstructionType.LOADIN ){
+					LoadIn nodeLdIn = (LoadIn) node.partialInstruction();
+					nodeLdIn.setOffset( cExp.getResultLocation() );
+					nodeLdIn.setDestination( nodeExp.getResultLocation() );
+					nodeExp.append( nodeLdIn );
+				} else {
+					throw new RuntimeException("Unexpected instruction type \""+node.partialInstruction().getClass()+"\"");
+				}
+				
+				this.parser.openReg.push( cExp.getResultLocation() );
+	
+			
+			} //end RightNode? check
+			
+		} else { //leaf (imm/ld) node
+			
+			
+			if( node.partialInstruction().getType() == InstructionType.LOAD){
+				Load nodeOp = (Load) node.partialInstruction();
+				nodeOp.setDestination( this.parser.openReg.pop() );
+				nodeExp.setResultLocation( nodeOp.getDestination() );
+				nodeExp.append(nodeOp);
+			} else if( node.partialInstruction().getType() == InstructionType.LDIMM ){
+				LoadImmediate nodeOp = (LoadImmediate) node.partialInstruction();
+				nodeOp.setDestination( this.parser.openReg.pop() );
+				nodeExp.setResultLocation( nodeOp.getDestination() );
+				nodeExp.append(nodeOp);
+			} else {
+				throw new RuntimeException("Unexpected instruction type \""+node.partialInstruction().getType()+"\"");
+			}
+			
+		}//end hasChild()?
+		nodeExp.setEvalType(node.evalType());
+		return nodeExp;
+	}
+	
+:}
+
+parser code {:
+
+	public SymbolStack symStack = new SymbolStack();
+	public Stack< Integer > openReg = new Stack< Integer >();
+	public CodeList instructionArray;
+	public PartialAutomata partialAutomata;
+	
+	public MataParser( String fileName ) throws FileNotFoundException {
+		super( new MataLex( new FileInputStream(fileName ) ));
+		for( int i = 0; i < 16; this.openReg.push(i++) );
+	}
+	
+	public CodeList getAssembly(){
+		return this.instructionArray;
+	}
+
+	
+
+:}
+terminal String ID;
+terminal VarType TYPE;
+terminal int INT;
+terminal double REAL;
+terminal boolean BOOLE;
+terminal 	SEMICOLON, COLON,
+			PLUS, MINUS, TIMES, DIVIDE, MOD, UMINUS,
+			GT, GE, LT, LE, NEQ, EQ, 
+			AND, OR, NOT, 
+			ASSIGN,
+			OBRAK, CBRAK, OPAREN, CPAREN, OBRACE, CBRACE,
+			IF, ELSE, WHILE, FOR,
+			ARRAY, RETURN,
+			DEFSTATES, DEFDIMENSION, DEFRADIUS; 
+
+non terminal CodeList program, lineStmt, machineDef, closedStmt, openStmt, stmt, stmts, lowerStmts;
+non terminal ExpressionNode valExpr, rvalue;
+non terminal PartialAutomata spaceDef;
+
+//precedence.
+precedence left AND, OR;
+precedence nonassoc LT, LE, GT, GE, NEQ, EQ;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MOD;
+precedence left UMINUS, NOT;
+
+
+
+program	::= spaceDef:vals machineDef:m   
+		{:
+			if( m.get(m.size()-1).getType() != InstructionType.HALTRET ) m.append( new HaltReturn(0));
+			/*
+			System.out.println( this.parser.openReg.toString() );
+			System.out.println( this.parser.symStack.toString() );
+			
+			Iterator<Instruction> iter = m.getInstructionList().iterator();
+			while(iter.hasNext()){
+				System.out.println(iter.next().toString());
+			}*/
+			
+			vals.setAssembly( m );
+			
+			this.parser.partialAutomata = vals;
+			
+		:}
+		;
+
+/* old; no longer define size in file
+spaceDef ::= DEFSTATES ASSIGN INT:states DEFSIZE ASSIGN INT:size DEFDIMENSION ASSIGN INT:dimension DEFRADIUS ASSIGN INT:radius SEMICOLON
+		 {:
+		 			 	
+		 	
+		 	if( states <= 0 ) {
+		 		throw new RuntimeException("Error in spatial specification, states cannot be <= 0");
+		 	} else if( size <= 0 ){
+		 		throw new RuntimeException("Error in spatial specification, size cannot be <= 0");
+		 	}else if(dimension <= 0 ){
+		 		throw new RuntimeException("Error in spatial specification, dimension cannot be <= 0");
+		 	}else if( radius < 0 ){
+		 		throw new RuntimeException("Error in spatial specification, radius cannot be < 0");
+		 	}
+		 	
+		 	int[] spaceDef = {size, dimension, radius, states};
+		 	this.parser.symStack.push("neighborhood", VarType.INT);
+		 	RESULT = spaceDef;
+		 	
+		 	
+		 	
+		 :} 
+
+		;
+*/
+
+
+spaceDef ::= DEFSTATES ASSIGN INT:states DEFDIMENSION ASSIGN INT:dimension DEFRADIUS ASSIGN INT:radius SEMICOLON
+		 {:
+		 	if( states <= 0 ) {
+		 		throw new RuntimeException("Error in spatial specification, states cannot be <= 0");
+		 	} else if(dimension <= 0 ){
+		 		throw new RuntimeException("Error in spatial specification, dimension cannot be <= 0");
+		 	} else if( radius < 0 ){
+		 		throw new RuntimeException("Error in spatial specification, radius cannot be < 0");
+		 	}
+		 	
+		 	PartialAutomata partialAutomata = new PartialAutomata();
+		 	partialAutomata = new PartialAutomata();
+		 	partialAutomata.setStates( states );
+		 	partialAutomata.setDimensions( dimension );
+		 	partialAutomata.setRadius( radius );
+		 	parser.symStack.push("neighborhood", VarType.INT);
+		 	RESULT = partialAutomata;
+		 :} 
+
+		;
+
+machineDef	::= stmts:e
+			{:
+				RESULT = e;
+			:}
+			;
+
+stmts ::= 	
+			stmts:es stmt:e
+			{:
+				es.append( e.getInstructionList() );
+				RESULT = es;
+			:}
+			
+			| stmt:e
+			{:
+			
+				RESULT = e; 
+			:}
+			;
+			
+stmt ::= 
+		closedStmt:e 
+		{: 
+		//System.out.println("stmt:closedStmt");
+			RESULT = e;
+		:}
+				
+		| openStmt:e 
+		{:
+		//System.out.println("stmt:closedStmt");
+			RESULT = e;
+	 	:}
+	 	
+	 	| WHILE OPAREN valExpr:condNode CPAREN stmt:s 
+	 	{:
+	 		//System.out.println("While Statement");
+	 		CodeList list = new CodeList();
+	 		Expression condExpr = evaluatePETree(condNode);
+	 		Break condBrInstr = new Break(Condition.FALSE, condExpr.getResultLocation(), s.size()+1);
+	 		Break loopBrInstr = new Break(Condition.UNCONDITIONAL, -1, -(s.size() + condExpr.size() + 2));
+			
+			if( condExpr.evalType() != VarType.BOOLE ){
+				throw new RuntimeException("Conditional expression must evaluate to type BOOLE not " + condExpr.evalType() );
+			}
+			this.parser.openReg.push( condExpr.getResultLocation() );
+			
+			list.append( condExpr );
+			list.append( condBrInstr );
+			list.append( s );
+			list.append( loopBrInstr );
+			
+	 		RESULT = list;
+	 	:}
+	 	
+	 	| {: this.parser.symStack.newScope(); :} FOR OPAREN lineStmt:L1 SEMICOLON valExpr:condNode SEMICOLON lineStmt:L2 CPAREN stmt:s
+	 	{:
+	 		//System.out.println("For statement");
+	 		CodeList list = new CodeList();
+	 		Expression condExpr = evaluatePETree( condNode );
+	 		Break condBrInstr = new Break( Condition.FALSE, condExpr.getResultLocation(), s.size()+L2.size()+1);
+	 		Break loopBrInstr = new Break( Condition.UNCONDITIONAL, -1, -(s.size() + condExpr.size() + L2.size() + 2));
+	 		
+	 		if( condExpr.evalType() != VarType.BOOLE ){
+				throw new RuntimeException("Conditional expression must evaluate to type BOOLE not " + condExpr.evalType() );
+			}
+			//this.parser.openReg.push( condExpr.getResultLocation() );
+			this.parser.openReg.push( condExpr.getResultLocation() );
+			
+			list.append(L1);
+			list.append(condExpr);
+			list.append(condBrInstr);
+			list.append(s);
+			list.append(L2);
+			list.append(loopBrInstr);
+	 		
+	 		this.parser.symStack.pop();
+	 		RESULT = list;
+	 	:}
+		;
+		
+lowerStmts ::= 
+	lineStmt:s SEMICOLON
+	{:
+		RESULT = s;
+	:}
+	
+	| OBRAK {: this.parser.symStack.newScope(); :} stmts:s CBRAK
+	{:
+		//System.out.println( "Before: " + this.parser.symStack.toString() );
+		this.parser.symStack.pop();
+		//System.out.println( "After: " + this.parser.symStack.toString() );
+		RESULT = s;
+	:}
+	;
+
+closedStmt ::=	
+		IF OPAREN valExpr:condNode CPAREN closedStmt:ifTrue ELSE closedStmt:ifFalse 
+		{:
+			//System.out.println("closedStmt:IF-ELSE");
+			
+			CodeList list = new CodeList();
+			Expression condExpr = evaluatePETree( condNode );
+			Break condBrInstr = new Break(Condition.FALSE, condExpr.getResultLocation(), ifTrue.size()+1 );
+			Break endBrInstr = new Break(Condition.UNCONDITIONAL, -1, ifFalse.size() );
+			
+			if( condExpr.evalType() != VarType.BOOLE ){
+				throw new RuntimeException("Conditional expression must evaluate to type BOOLE not " + condExpr.evalType() );
+			}
+			
+			this.parser.openReg.push( condExpr.getResultLocation() );
+			
+			list.append( condExpr );		//append code for conditional expression
+			list.append( condBrInstr );	//append code for conditional expression
+			list.append( ifTrue);		//append code for ifTrue statement
+			list.append( endBrInstr );	//append unconditional break out of if-else block
+			list.append( ifFalse );		//append lower block code
+			
+			RESULT = list;
+
+		:}  				
+				
+		| lowerStmts:s
+		{:
+			//System.out.println("closedStmt:lowerStmts");
+			RESULT = s;
+		:}
+		;
+
+openStmt ::=	
+		IF OPAREN valExpr:condNode CPAREN stmt:cmpdStmt 
+		{:
+			//System.out.println("openStmt:IF");
+			
+			CodeList list = new CodeList();
+			Expression condExpr = evaluatePETree( condNode );
+			Break condBrInstr = new Break(Condition.FALSE, condExpr.getResultLocation(), cmpdStmt.size() ); //if(false) skip
+			
+			if( condExpr.evalType() != VarType.BOOLE ){
+					throw new RuntimeException("Conditional expression must evaluate to type BOOLE not " + condExpr.evalType() );
+			}
+			
+			this.parser.openReg.push( condExpr.getResultLocation() );
+			
+			list.append( condExpr );		//append code for conditional expression
+			list.append( condBrInstr );	//append code for conditional expression
+			list.append( cmpdStmt );	//append code for ifTrue statement
+			//there is no br_u because the code it would jump to is what it would already execute next
+			
+			RESULT = new CodeList(list);
+		
+		:}
+				
+		| IF OPAREN valExpr:condNode CPAREN closedStmt:ifTrue ELSE openStmt:ifFalse  
+		{:
+				//System.out.println("openStmt:IF,ELSE-IF");
+				
+				CodeList list = new CodeList();
+				Expression condExpr = evaluatePETree( condNode );
+				Break condBrInstr = new Break(Condition.FALSE, condExpr.getResultLocation(), ifTrue.size()+1 );
+				Break endBrInstr = new Break(Condition.UNCONDITIONAL, -1, ifFalse.size() );
+				
+				if( condExpr.evalType() != VarType.BOOLE ){
+					throw new RuntimeException("Conditional expression must evaluate to type BOOLE not " + condExpr.evalType() );
+				}
+				
+				this.parser.openReg.push( condExpr.getResultLocation() );
+				
+				list.append( condExpr );		//append code for conditional expression
+				list.append( condBrInstr );	//append code for conditional expression
+				list.append( ifTrue);		//append code for ifTrue statement
+				list.append( endBrInstr );	//append unconditional break out of if-else block
+				list.append( ifFalse );		//append lower block code
+				
+				RESULT = new CodeList(list);
+		:}
+		;
+
+		
+lineStmt	::= TYPE:t ID:id ASSIGN valExpr:e 
+		{:
+			Expression expr = evaluatePETree( e );
+			if( t != expr.evalType() ){
+				throw new RuntimeException("Attemtpting to assign " + expr.evalType() +" type value into a " + t + " type variable");
+			}
+			int position = this.parser.symStack.push(id, t);
+			int resultLocation = expr.getResultLocation();
+			Store stInstr = new Store(resultLocation, position);
+			this.parser.openReg.push( resultLocation );
+			expr.append(stInstr);
+			expr.nullResultLocation();
+			//System.out.println("Assignment: " +id+":\n"+expr+"\n"); 
+			RESULT = new CodeList(expr);
+		:}
+		
+		| ID:id ASSIGN valExpr:e 
+		{:
+			Expression expr = evaluatePETree( e );
+			Label assignInto = this.parser.symStack.getLabel(id);
+			if( assignInto.getType() != expr.evalType() ){
+				throw new RuntimeException("Attemtpting to assign " + expr.evalType() +" type value into a " + assignInto.getType() + " type variable");
+			}
+			int position = assignInto.getPosition();
+			int resultLocation = expr.getResultLocation();
+			Store stInstr = new Store(resultLocation, position);
+			this.parser.openReg.push( resultLocation );
+			expr.append(stInstr);
+			expr.nullResultLocation();
+			//System.out.println("Assignment: " +id+":\n"+expr+"\n"); 
+			RESULT = new CodeList(expr);
+
+			
+		:}
+		
+		| ARRAY COLON TYPE:t ID:id OBRACE valExpr:sizeExpr CBRACE 
+		{:
+			
+			Expression expr = evaluatePETree( sizeExpr );
+			if( expr.evalType() != VarType.INT ){
+				throw new RuntimeException("Allocation size expression must be of type INT, not "+expr.evalType());
+			}
+			int position = this.parser.symStack.push(id, t);
+			int resultLocation = expr.getResultLocation();
+			//Store stInstr = new Store(resultLocation, position);
+			AllocateArray aaInstr = new AllocateArray( position, resultLocation );
+			this.parser.openReg.push( resultLocation );
+			expr.append(aaInstr);
+			expr.nullResultLocation();
+			
+			//System.out.println("Array Creation @ " + position);
+			RESULT = new CodeList(expr);
+		:}
+		
+		| ID:id OBRACE valExpr:indexExpr CBRACE ASSIGN valExpr:e 
+		{:
+			//System.out.println("Array assignment");
+			
+			Label assignInto = this.parser.symStack.getLabel(id);
+			//I dont believe there is an optimization problem here
+			//given that one expression MUST be held and will no be released
+			//until the creation of the store instruction
+			Expression vExpr = evaluatePETree( e );
+			Expression iExpr = evaluatePETree( indexExpr );
+			
+			if( iExpr.evalType() != VarType.INT ){
+				throw new RuntimeException("Allocation size expression must be of type INT, not "+ iExpr.evalType());
+			} else if( assignInto.getType() != vExpr.evalType() ){
+				throw new RuntimeException("Attemtpting to assign " + vExpr.evalType() +" type value into a " + assignInto.getType() + " type variable");
+			}
+			
+			int position = assignInto.getPosition();
+			int resultLocation = vExpr.getResultLocation();
+			int offsetReg = iExpr.getResultLocation();
+			StoreIn stInstr = new StoreIn(resultLocation, position, offsetReg);
+			this.parser.openReg.push( resultLocation );
+			this.parser.openReg.push( offsetReg );
+			vExpr.append(iExpr.getInstructionList());
+			vExpr.append(stInstr);
+			vExpr.nullResultLocation();
+			//System.out.println("Assignment: " +id+":\n"+expr+"\n"); 
+			RESULT = new CodeList(vExpr);
+		
+		:}
+		| RETURN valExpr:retExpr 
+		{:
+			Expression rExpr = evaluatePETree(retExpr);
+			HaltReturn retInstr = new HaltReturn( rExpr.getResultLocation() );
+			rExpr.append(retInstr);
+			this.parser.openReg.push( rExpr.getResultLocation() );
+			RESULT = new CodeList(rExpr);
+		:}
+		;
+		
+
+
+valExpr	::= valExpr:a PLUS valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"+\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"+\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.PLUS );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+			
+			
+		:}
+		
+		| valExpr:a MINUS valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"-\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"-\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.MINUS );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+		:}
+		
+		| valExpr:a TIMES valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"*\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"*\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.TIMES );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a DIVIDE valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"/\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"/\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.DIVIDE );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a AND valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.BOOLE){
+				throw new RuntimeException("The operation \"&\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.BOOLE){
+				throw new RuntimeException("The operation \"&\" is not applicable for type "+b.evalType() );
+			} 
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.AND );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+		
+		| valExpr:a OR valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.BOOLE){
+				throw new RuntimeException("The operation \"|\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.BOOLE){
+				throw new RuntimeException("The operation \"|\" is not applicable for type "+b.evalType() );
+			} 
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.OR );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+		
+		| valExpr:a MOD valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.MOD );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a EQ valExpr:b 
+		{: 
+			//type checking
+			//types only have to be the same
+			if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.EQ );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+		
+		| valExpr:a NEQ valExpr:b 
+		{:
+			//type checking
+			//types only have to be the same
+			if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.NEQ );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a LT valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.LT );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a LE valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.LE );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( a );
+			node.setRightNode( b );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+		
+		| valExpr:a GT valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.LT );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( b );
+			node.setRightNode( a );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+
+		| valExpr:a GE valExpr:b 
+		{: 
+			//type checking
+			if( a.evalType() != VarType.INT && a .evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+a.evalType() );
+			} else if( b.evalType() != VarType.INT && b.evalType() != VarType.REAL){
+				throw new RuntimeException("The operation \"%\" is not applicable for type "+b.evalType() );
+			} else if( a.evalType() != b.evalType() ){
+				throw new RuntimeException("Incompatible types "+a.evalType() +" and " +b.evalType() );
+			}
+						
+			Operator instr = new Operator();
+			instr.setOperator( Operation.LE );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( b );
+			node.setRightNode( a );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+		
+			RESULT = node;
+		:}
+
+		| NOT valExpr:a 
+		{: 
+			
+			//type checking
+			if( a.evalType() != VarType.BOOLE ){
+				throw new RuntimeException("The operation \"!\" is not applicable for type "+a.evalType() );
+			}
+			
+			Operator instr = new Operator();
+			instr.setOperator( Operation.NOT );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode(a);
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			//System.out.println( node.label() );
+			RESULT = node;
+		:}
+		
+		| MINUS valExpr:a 
+		{: 
+			//instruction for psudo left node
+			LoadImmediate zeroInstr = new LoadImmediate();
+			
+			
+			if( a.evalType() == VarType.INT ){
+				zeroInstr.setValue( new Integer(0) );
+			} else if( a.evalType() == VarType.REAL ){
+				zeroInstr.setValue( new Double( 0.0 ) );
+			} else {
+				throw new RuntimeException("The operation \"-\" is not applicable for type "+a.evalType() );
+			}
+								
+			//construct psudo left noded for 0 - a;
+			ExpressionNode zeroNode = new ExpressionNode();
+			zeroNode.setLabel( 1) ;
+			zeroNode.setPartialInstruction( zeroInstr );
+			zeroNode.getExpression().setEvalType( a.evalType() );
+
+			//construct this node
+			Operator instr = new Operator();
+			instr.setOperator( Operation.MINUS );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode( zeroNode );
+			node.setRightNode( a );
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( a.evalType() );
+			
+			RESULT = node;
+			
+			
+			
+		:} %prec UMINUS
+		
+		| OPAREN valExpr:e CPAREN 
+		{:
+			RESULT = e;
+		:}
+		
+		| rvalue:a 
+		{:
+			RESULT = a;
+		:}
+		;		
+		
+rvalue	::= INT:i
+		{:
+			LoadImmediate instr = new LoadImmediate();
+			instr.setValue( i );
+			ExpressionNode node = new ExpressionNode();
+			node.setLabel( 1 );
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.INT );
+			
+			RESULT = node;
+		:}
+		
+		|	REAL:r
+		{:
+			LoadImmediate instr = new LoadImmediate();
+			instr.setValue( r );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLabel( 1 );
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.REAL );
+			
+			RESULT = node;
+		:}
+		
+		|	BOOLE:b
+		{:
+			LoadImmediate instr = new LoadImmediate();
+			instr.setValue( b );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLabel( 1 );
+			node.setPartialInstruction( instr );
+			node.setEvalType( VarType.BOOLE );
+			
+			RESULT = node;
+		:}
+		
+		|	ID:id	
+		{:
+			Label label = this.parser.symStack.getLabel(id);
+			Load instr = new Load();
+			instr.setSource( label.getPosition() );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLabel( 1 );
+			node.setPartialInstruction( instr );
+			node.setEvalType( label.getType() );
+			
+			RESULT = node;
+
+		:}
+		
+		|	ID:id OBRACE valExpr:expr CBRACE
+		{:
+			
+			if( expr.evalType() != VarType.INT ){
+				throw new RuntimeException("Array index expression must be of type INT, not "+expr.evalType());
+			} 
+			
+			Label label = this.parser.symStack.getLabel(id);
+			LoadIn instr = new LoadIn(); 
+			instr.setSource( label.getPosition() );
+			
+			ExpressionNode node = new ExpressionNode();
+			node.setLeftNode(expr);
+			node.makeLabel();
+			node.setPartialInstruction( instr );
+			node.setEvalType( label.getType() );
+			//System.out.println( node.label() );
+			RESULT = node;
+		:}
+		;

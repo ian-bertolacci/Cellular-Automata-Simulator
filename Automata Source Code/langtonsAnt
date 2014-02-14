@@ -1,0 +1,39 @@
+$states = 10
+$dimension = 2
+$radius = 1
+;
+
+int dead = 0;
+int alive = 1;
+int upDead = 2;
+int upAlive = 3;
+int downDead = 4;
+int downAlive = 5;
+int rightDead = 6;
+int rightAlive = 7;
+int leftDead = 8;
+int leftAlive = 9;
+
+int me = neighborhood[4];
+
+if( me > 1) return me % 2; 
+
+if( neighborhood[1] == downAlive | neighborhood[1] == downDead ){
+	if( me == dead ) return rightAlive;
+	if( me == alive ) return leftDead;
+
+} else if( neighborhood[3] == rightAlive | neighborhood[3] == rightDead ){
+	if( me == 0 ) return upAlive;
+	if( me == 1 ) return downDead;
+
+} else if( neighborhood[7] == upAlive | neighborhood[7] == upDead){
+	if( me == 0 ) return leftAlive;
+	if( me == 1 ) return rightDead;
+
+} else if( neighborhood[5] == leftAlive | neighborhood[5] == leftDead ){
+	if( me == 0 ) return downAlive;
+	if( me == 1 ) return upDead;
+
+} else {
+	return me;
+}

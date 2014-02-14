@@ -1,0 +1,12 @@
+$states = 2
+$dimension = 1
+$radius = 1
+;
+
+
+if( (neighborhood[0] == 1 & neighborhood[1] == 0 & neighborhood[2] == 0) 
+  | (neighborhood[0] ==0 & neighborhood[1] == 0 & neighborhood[2] == 1) ){
+	return 1;
+} else {
+	return 0;
+}

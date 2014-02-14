@@ -1,0 +1,19 @@
+$states = 2
+$dimension = 2
+$radius = 1
+;
+boole current = neighborhood[4] == 1;
+boole north = neighborhood[1] == 1;
+boole south = neighborhood[7] == 1;
+boole east = neighborhood[5] == 1;
+boole west = neighborhood[3] == 1;
+
+boole xOrCN = ( north & !current) | ( current & !north) ;
+boole xOrCNS = ( south & !xOrCN) | ( xOrCN & !south) ;
+boole xOrCNSE = ( east & !xOrCNS) | ( xOrCNS & !east) ;
+boole xOrCNSEW = ( west & !xOrCNSE) | ( xOrCNSE & !west) ;
+boole xOr = ( current & !xOrCNSEW) | ( xOrCNSEW & !current) ;
+
+if( xOr ) return 1;
+else return 0;
+
