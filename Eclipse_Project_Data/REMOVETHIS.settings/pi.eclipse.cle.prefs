@@ -1,0 +1,15 @@
+//src/Mata.cup/cup-compact-red=false
+//src/Mata.cup/cup-debug=false
+//src/Mata.cup/cup-expected-conflicts=0
+//src/Mata.cup/cup-no-positions=false
+//src/Mata.cup/cup-no-scanner=false
+//src/Mata.cup/cup-non-terms=false
+//src/Mata.cup/cup-output=src
+//src/Mata.cup/cup-parser-class=MataParser
+//src/Mata.cup/cup-symbols-class=MataSym
+//src/Mata.cup/cup-symbols-if=true
+//src/Mata.lex/lex-code-method=0
+//src/Mata.lex/lex-comply-jlex=false
+//src/Mata.lex/lex-output=src
+//src/Mata.lex/lex-skip-min=false
+eclipse.preferences.version=1
