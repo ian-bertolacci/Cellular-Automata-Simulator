@@ -31,6 +31,12 @@ $radius = 1<br />
 From here, the language can be treated as procedural C, including else-if block statements, for/while loops, variables and arrays. <br />
 In this version of Mata, there are no switch, break, type cast, or function call statements.<br />
 
+The remainder of the file is what will be executed when updating each cell.
+The return value is the state of the cell at time t+1
+
+There is a global variable, "neighborhood", that is an array containing the neighborhood states of the current cell <br />
+The current cell is always at index = floor( ((2r+1)^2 ) / 2 )
+
 The operators include:<br />
 a < b	( a less than b )<br />
 a <= b	( a less than or equal to b )<br />
@@ -60,12 +66,13 @@ declares an array of type int with 100 elements, named “myArray”<br />
 
 Arrays are 0 indexed.
 
-
 All automata must be terminated with a return statement via the syntax:<br />
 return < int > ;<br />
+since the return value is the cell state, 0 <= value < $states must be true 
 
-
-Note that the compiler is not the smartest, and it is possible to compile a program that does not have a return statement, but will break when the automata is run.<br />
+Note that the compiler is not the smartest, and it is possible to compile a program that does not 
+have a return statement or have terminating return statement. <br />
+However, the program will break when termination of the automata code occurs without a return.<br />
 
 Several automata rules are given in the “Automata Source Code” directory<br />
 
