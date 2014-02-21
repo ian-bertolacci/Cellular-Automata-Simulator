@@ -97,18 +97,18 @@ versions of the module:
 java-cup runtime library as well, just to make running simpler
 
 The Makefile has several options:
-	+ all: which creates both versions of the module
-	+ CAS.jar: which creates the CAS.jar module
-	+ CAS_CUP-runtime_include.jar: which creates the CAS_CUP-runtime_include.jar module
-	+ CAS_Setup which creates/cleans the directory used in setting up the module into a jar file
-	+ makeClassFiles: which compiles the java code
-	+ makeFromCUPandLEX: which generates the parser and lexer java code from Mata.cup and Mata.lex
-	+ makeBIN: which creates the directory used for compilation, and coppies the code from source
-	+ getCUPandLEX: which downloads the jflex and CUP jar's from the net, extracts them
-and removes any tailings
-	+ clean: removes the bin/, CAS/ and CAS*.jar directories/files, if they exist
-	+ new: equivelent to `make clean; make all;`
-	+ cleanAll: performs clean and rm *.jar to clean out the downloaded jflex and CUP jars
+	+ all: which creates both versions of the module <br />
+	+ CAS.jar: which creates the CAS.jar module  <br />
+	+ CAS_CUP-runtime_include.jar: which creates the CAS_CUP-runtime_include.jar module <br />
+	+ CAS_Setup which creates/cleans the directory used in setting up the module into a jar file <br />
+	+ makeClassFiles: which compiles the java code <br />
+	+ makeFromCUPandLEX: which generates the parser and lexer java code from Mata.cup and Mata.lex <br />
+	+ makeBIN: which creates the directory used for compilation, and coppies the code from source <br />
+	+ getCUPandLEX: which downloads the jflex and CUP jar's from the net, extracts them <br />
+and removes any tailings <br />
+	+ clean: removes the bin/, CAS/ and CAS*.jar directories/files, if they exist <br />
+	+ new: equivelent to `make clean; make all;` <br />
+	+ cleanAll: performs clean and rm *.jar to clean out the downloaded jflex and CUP jars <br />
 	
 
 
