@@ -1,13 +1,13 @@
 
-package parser;
+package cas.parser;
 
 import java_cup.runtime.*;
 import java.io.IOException;
 
-import parser.MataSym;
-import static parser.MataSym.*;
+import cas.parser.MataSym;
+import cas.parser.MataSym.*;
 
-import machine.VirtualMachine.VarType;
+import cas.machine.VirtualMachine.VarType;
 
 
 %%

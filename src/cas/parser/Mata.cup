@@ -1,9 +1,8 @@
-package parser;
+package cas.parser;
 
 import java_cup.runtime.*;
-//import java_cup.parser;
 
-import parser.parser_containers.*;
+import cas.parser.parser_containers.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
@@ -14,15 +13,15 @@ import java.util.Iterator;
 
 import java.io.File;
 
-import instruction.*;
-import instruction.Break.Condition;
-import instruction.Instruction.InstructionType;
-import instruction.Operator.Operation;
-import machine.VirtualMachine.VarType;
+import cas.instruction.*;
+import cas.instruction.Break.Condition;
+import cas.instruction.Instruction.InstructionType;
+import cas.instruction.Operator.Operation;
+import cas.machine.VirtualMachine.VarType;
 
-import machine.VirtualMachine;
-import machine.*;
-import automata.Automata;
+import cas.machine.VirtualMachine;
+import cas.machine.*;
+import cas.automata.Automata;
 
 init with {: 
 	

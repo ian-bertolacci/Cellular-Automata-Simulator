@@ -1,10 +1,11 @@
 #SHELL := /bin/sh
 SRC = ./src
-BIN = ./testBin
+BIN = ./bin
 LIBJAR = CAS.jar
 LIBRUNJAR = CAS_CUP-runtime_include.jar
 LIBDIR = ./CAS
 
+all: CAS.jar CAS_CUP-runtime_include.jar
 
 CAS_CUP-runtime_include.jar: CAS_Setup
 	@ \
@@ -14,19 +15,27 @@ CAS_CUP-runtime_include.jar: CAS_Setup
 	jar -xf java-cup-11a-runtime.jar java_cup ;\
 	rm java-cup-11a-runtime.jar ;\
 	jar cf $(LIBRUNJAR) . ;\
-	mv $(LIBRUNJAR) ../.
-
-CAS_Setup: makeClassFiles makeCAS
-	@ \
-	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ CAS_Setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
-	cp -r $(BIN)/* $(LIBDIR)/. ;\
-
+	mv $(LIBRUNJAR) ../. ;\
+	
 CAS.jar: CAS_Setup
 	@ \
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ CAS.jar ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
 	cd $(LIBDIR) ;\
 	jar cf $(LIBJAR) . ;\
 	mv $(LIBJAR) ../.
+
+CAS_Setup: makeClassFiles 
+	@ \
+	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ CAS_Setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
+	if [ -e $(LIBDIR) ];	then \
+		echo "$(LIBDIR) exists"; \
+		echo "Removing $(LIBDIR)" ;\
+		rm -r $(LIBDIR) ;\
+	fi; \
+	echo "Creating $(LIBDIR)"; \
+	mkdir $(LIBDIR); \
+	cp -r $(BIN)/* $(LIBDIR)/. ;\
+	cp -r $(SRC)/ $(LIBDIR)/. ;\
 
 makeClassFiles: makeBIN makeFromCUPandLEX
 	@ \
@@ -36,17 +45,13 @@ makeClassFiles: makeBIN makeFromCUPandLEX
 	javac -classpath .:../java-cup-11a.jar @srcFiles.txt ;\
 	cat srcFiles.txt | xargs rm ;\
 	rm srcFiles.txt;\
-
-makeCAS:
+	
+makeFromCUPandLEX: getCUPandLEX
 	@ \
-	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ makeCAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
-	if [ -e $(LIBDIR) ];	then \
-		echo "$(LIBDIR) exists"; \
-		echo "Removing $(LIBDIR)" ;\
-		rm -r $(LIBDIR) ;\
-	fi; \
-	echo "Creating $(LIBDIR)"; \
-	mkdir $(LIBDIR); \
+	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ makeFromCUPandLEX ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
+	cd $(BIN)/cas/parser ;\
+	java -jar ../../../java-cup-11a.jar -symbols MataSym -parser MataParser Mata.cup ;\
+	java -jar ../../../jflex-1.5.0.jar --nobak Mata.lex ;\
 
 makeBIN: $(SRC)
 	@ \
@@ -58,14 +63,6 @@ makeBIN: $(SRC)
 		mkdir $(BIN); \
 	fi; \
 	cp -ru $(SRC)/* $(BIN)/. ; \
-	rm $(BIN)/cas/parser/*.java
-makeFromCUPandLEX: getCUPandLEX
-	@ \
-	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~ makeFromCUPandLEX ~~~~~~~~~~~~~~~~~~~~~~~~~~~" ;\
-	cd $(BIN)/cas/parser ;\
-	java -jar ../../../java-cup-11a.jar -symbols MataSym -parser MataParser Mata.cup ;\
-	java -jar ../../../jflex-1.5.0.jar --nobak Mata.lex ;\
-
 
 getCUPandLEX: makeBIN
 	@ \
@@ -74,7 +71,7 @@ getCUPandLEX: makeBIN
 	if [ -e "jflex-1.5.0.jar" ]; then \
 		echo "jflex-1.5.0.jar exists" ; \
 	else \
-		echo "getting JLex.jar" ;\
+		echo "jflex-1.5.0.jar" ;\
 		wget http://www.jflex.de/jflex-1.5.0.tar.gz ;\
 		gunzip jflex-1.5.0.tar.gz; \
 		tar xvf jflex-1.5.0.tar; \
@@ -123,16 +120,20 @@ clean:
 	
 
 	
-new: clean CAS.jar
+new: clean all
 
 cleanAll: clean
 	@ \
 	rm *.jar ;\
 		
-	
+cleanall: cleanAll
+
 makebin: makeBIN
 
 makeBin: makeBIN
 
 makeclassfiles: makeClassFiles
-	
+
+getcupandlex: getCUPandLEX
+
+makefromcupandlex: makeFromCUPandLEX

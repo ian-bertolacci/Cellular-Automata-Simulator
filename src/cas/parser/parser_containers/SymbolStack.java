@@ -1,8 +1,9 @@
-package parser.parser_containers;
+package cas.parser.parser_containers;
 
 import java.util.Iterator;
 import java.util.Stack;
-import machine.VirtualMachine.VarType;
+
+import cas.machine.VirtualMachine.VarType;
 
 public class SymbolStack {
 

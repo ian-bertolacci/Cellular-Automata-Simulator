@@ -1,6 +1,6 @@
-package parser.parser_containers;
+package cas.parser.parser_containers;
 
-import machine.VirtualMachine.VarType;
+import cas.machine.VirtualMachine.VarType;
 
 public class Label {
 	private int position;

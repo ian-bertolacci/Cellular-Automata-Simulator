@@ -1,4 +1,4 @@
-package instruction;
+package cas.instruction;
 
 public abstract class Instruction {
 	public enum InstructionType { ALLOCARRAY, BREAK, HALTRET, JUMP, LOAD, LOADIN, LDIMM, STORE, STOREIN, OPERATOR };

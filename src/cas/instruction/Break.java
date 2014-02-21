@@ -1,4 +1,4 @@
-package instruction;
+package cas.instruction;
 
 public class Break extends Instruction{
 	

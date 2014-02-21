@@ -1,7 +1,7 @@
-package parser.parser_containers;
+package cas.parser.parser_containers;
 
-import machine.VirtualMachine;
-import automata.Automata;
+import cas.automata.Automata;
+import cas.machine.VirtualMachine;
 
 public class PartialAutomata {
 	private int size;

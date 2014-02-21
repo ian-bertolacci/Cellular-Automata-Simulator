@@ -1,10 +1,10 @@
-package automata;
+package cas.automata;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-import machine.VirtualMachine;
+import cas.machine.VirtualMachine;
 import tools.Tools;
 public class Automata {
 

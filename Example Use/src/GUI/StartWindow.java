@@ -16,9 +16,9 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-import parser.MataParser;
-import parser.parser_containers.PartialAutomata;
-import automata.Automata;
+import cas.parser.MataParser;
+import cas.parser.parser_containers.PartialAutomata;
+import cas.automata.Automata;
 
 public class StartWindow {
 

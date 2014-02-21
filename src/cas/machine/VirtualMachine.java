@@ -1,12 +1,11 @@
-package machine;
+package cas.machine;
 
 import java.util.Arrays;
 
-import parser.parser_containers.IndexableStack;
-import parser.parser_containers.CodeList;
-
-import instruction.*;
-import instruction.Break.Condition;
+import cas.instruction.*;
+import cas.instruction.Break.Condition;
+import cas.parser.parser_containers.CodeList;
+import cas.parser.parser_containers.IndexableStack;
 
 public class VirtualMachine {
 

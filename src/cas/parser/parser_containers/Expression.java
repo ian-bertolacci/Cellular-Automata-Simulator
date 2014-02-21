@@ -1,10 +1,10 @@
-package parser.parser_containers;
+package cas.parser.parser_containers;
 
-import instruction.Instruction;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import machine.VirtualMachine.VarType;
+import cas.instruction.Instruction;
+import cas.machine.VirtualMachine.VarType;
 
 public class Expression extends CodeList{
 	

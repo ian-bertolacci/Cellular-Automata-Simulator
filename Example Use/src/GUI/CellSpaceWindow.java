@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import drawing.ViewSpace;
 
-import automata.Automata;
+import cas.automata.Automata;
 
 public class CellSpaceWindow  extends JFrame{
 	
