@@ -119,7 +119,7 @@ That in mind take note that interface to the module could, and probably will, ch
 in the future. <br />
 That said, here is the most basic tutorial on how the module can be utilized.
 
-A most basic program would be this:
+A most basic program would be this: <br />
 <code>
 public class CASTest1{
 	public static void main(String[] args){
