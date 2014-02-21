@@ -1,0 +1,243 @@
+\hypertarget{classcas_1_1parser_1_1_mata_parser}{\section{cas.\-parser.\-Mata\-Parser Class Reference}
+\label{classcas_1_1parser_1_1_mata_parser}\index{cas.\-parser.\-Mata\-Parser@{cas.\-parser.\-Mata\-Parser}}
+}
+Inheritance diagram for cas.\-parser.\-Mata\-Parser\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classcas_1_1parser_1_1_mata_parser}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcas_1_1parser_1_1_mata_parser_a5c29719be1371a4780e765b361ca78c6}{Mata\-Parser} ()
+\item 
+\hyperlink{classcas_1_1parser_1_1_mata_parser_a128c3616b1f633dcc52d059c296a010b}{Mata\-Parser} (java\-\_\-cup.\-runtime.\-Scanner s)
+\item 
+\hyperlink{classcas_1_1parser_1_1_mata_parser_a99c183666b6d446fee9597df6afd2fd3}{Mata\-Parser} (java\-\_\-cup.\-runtime.\-Scanner s, java\-\_\-cup.\-runtime.\-Symbol\-Factory sf)
+\item 
+short\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} \hyperlink{classcas_1_1parser_1_1_mata_parser_a3b553b038bc42f727b448c7b5c5468fb}{production\-\_\-table} ()
+\item 
+short\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} \hyperlink{classcas_1_1parser_1_1_mata_parser_a6aaa814d580652feb3aa893fd06880fe}{action\-\_\-table} ()
+\item 
+short\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} \hyperlink{classcas_1_1parser_1_1_mata_parser_a2bbee0284ae11462dae502564442206a}{reduce\-\_\-table} ()
+\item 
+java\-\_\-cup.\-runtime.\-Symbol \hyperlink{classcas_1_1parser_1_1_mata_parser_a631f41c676b2dcfa2701415af0511a66}{do\-\_\-action} (int act\-\_\-num, java\-\_\-cup.\-runtime.\-lr\-\_\-parser parser, java.\-util.\-Stack stack, int top)  throws java.\-lang.\-Exception   
+\item 
+int \hyperlink{classcas_1_1parser_1_1_mata_parser_a3dc5d030c718f44ad6c3dc5396b952a2}{start\-\_\-state} ()
+\item 
+int \hyperlink{classcas_1_1parser_1_1_mata_parser_ac30546d72f0e661426605ecdb1a64693}{start\-\_\-production} ()
+\item 
+int \hyperlink{classcas_1_1parser_1_1_mata_parser_a00bca4ca9c3fbe57168ad73d34fb832e}{E\-O\-F\-\_\-sym} ()
+\item 
+int \hyperlink{classcas_1_1parser_1_1_mata_parser_a79eefa539efa888039725c1da054a785}{error\-\_\-sym} ()
+\item 
+void \hyperlink{classcas_1_1parser_1_1_mata_parser_a582ff46721e8dd7d33414e117b344cfb}{user\-\_\-init} ()  throws java.\-lang.\-Exception     
+\item 
+\hyperlink{classcas_1_1parser_1_1_mata_parser_adf85797d8bdcf3769e91cc5a58b52098}{Mata\-Parser} (String file\-Name)  throws File\-Not\-Found\-Exception 
+\item 
+Code\-List \hyperlink{classcas_1_1parser_1_1_mata_parser_af819a65de07bd194e287e95b376dbfdb}{get\-Assembly} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Symbol\-Stack \hyperlink{classcas_1_1parser_1_1_mata_parser_aba7f0d768253977ae41bdc34b9a35d22}{sym\-Stack} = new Symbol\-Stack()
+\item 
+Stack$<$ Integer $>$ \hyperlink{classcas_1_1parser_1_1_mata_parser_a6b4855da7611e701e380aea7477fb48a}{open\-Reg} = new Stack$<$ Integer $>$()
+\item 
+Code\-List \hyperlink{classcas_1_1parser_1_1_mata_parser_aebf4da5991406e740a80f21a1d44b54f}{instruction\-Array}
+\item 
+Partial\-Automata \hyperlink{classcas_1_1parser_1_1_mata_parser_af7dd1bb4dc646c7df148a5ea60731f2d}{partial\-Automata}
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classcas_1_1parser_1_1_mata_parser_a196439f847bfa1e4d791265dbf858cda}{init\-\_\-actions} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+C\-U\-P \$\hyperlink{classcas_1_1parser_1_1_mata_parser}{Mata\-Parser} \$actions \hyperlink{classcas_1_1parser_1_1_mata_parser_aa3869480583db95ded43cab8a9e95076}{action\-\_\-obj}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static final short \hyperlink{classcas_1_1parser_1_1_mata_parser_a4ef6a5f2a08db3c2e752b4fd24ac5dad}{\-\_\-production\-\_\-table} \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]}
+\item 
+static final short\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} \hyperlink{classcas_1_1parser_1_1_mata_parser_a8d0afaf46e35b1827bb263d8d27bc747}{\-\_\-action\-\_\-table}
+\item 
+static final short\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} \hyperlink{classcas_1_1parser_1_1_mata_parser_a15d061d34b6b6a927ca9b7c76799dbd7}{\-\_\-reduce\-\_\-table}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+C\-U\-P v0.\-11a beta 20060608 generated parser. \begin{DoxyVersion}{Version}
+Thu Feb 20 08\-:38\-:05 M\-S\-T 2014 
+\end{DoxyVersion}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_a5c29719be1371a4780e765b361ca78c6}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!Mata\-Parser@{Mata\-Parser}}
+\index{Mata\-Parser@{Mata\-Parser}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{Mata\-Parser}]{\setlength{\rightskip}{0pt plus 5cm}cas.\-parser.\-Mata\-Parser.\-Mata\-Parser (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a5c29719be1371a4780e765b361ca78c6}
+Default constructor. \hypertarget{classcas_1_1parser_1_1_mata_parser_a128c3616b1f633dcc52d059c296a010b}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!Mata\-Parser@{Mata\-Parser}}
+\index{Mata\-Parser@{Mata\-Parser}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{Mata\-Parser}]{\setlength{\rightskip}{0pt plus 5cm}cas.\-parser.\-Mata\-Parser.\-Mata\-Parser (
+\begin{DoxyParamCaption}
+\item[{java\-\_\-cup.\-runtime.\-Scanner}]{s}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a128c3616b1f633dcc52d059c296a010b}
+Constructor which sets the default scanner. \hypertarget{classcas_1_1parser_1_1_mata_parser_a99c183666b6d446fee9597df6afd2fd3}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!Mata\-Parser@{Mata\-Parser}}
+\index{Mata\-Parser@{Mata\-Parser}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{Mata\-Parser}]{\setlength{\rightskip}{0pt plus 5cm}cas.\-parser.\-Mata\-Parser.\-Mata\-Parser (
+\begin{DoxyParamCaption}
+\item[{java\-\_\-cup.\-runtime.\-Scanner}]{s, }
+\item[{java\-\_\-cup.\-runtime.\-Symbol\-Factory}]{sf}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a99c183666b6d446fee9597df6afd2fd3}
+Constructor which sets the default scanner. \hypertarget{classcas_1_1parser_1_1_mata_parser_adf85797d8bdcf3769e91cc5a58b52098}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!Mata\-Parser@{Mata\-Parser}}
+\index{Mata\-Parser@{Mata\-Parser}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{Mata\-Parser}]{\setlength{\rightskip}{0pt plus 5cm}cas.\-parser.\-Mata\-Parser.\-Mata\-Parser (
+\begin{DoxyParamCaption}
+\item[{String}]{file\-Name}
+\end{DoxyParamCaption}
+)  throws File\-Not\-Found\-Exception }}\label{classcas_1_1parser_1_1_mata_parser_adf85797d8bdcf3769e91cc5a58b52098}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_a6aaa814d580652feb3aa893fd06880fe}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!action\-\_\-table@{action\-\_\-table}}
+\index{action\-\_\-table@{action\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{action\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}short \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} cas.\-parser.\-Mata\-Parser.\-action\-\_\-table (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a6aaa814d580652feb3aa893fd06880fe}
+Access to parse-\/action table. \hypertarget{classcas_1_1parser_1_1_mata_parser_a631f41c676b2dcfa2701415af0511a66}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!do\-\_\-action@{do\-\_\-action}}
+\index{do\-\_\-action@{do\-\_\-action}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{do\-\_\-action}]{\setlength{\rightskip}{0pt plus 5cm}java\-\_\-cup.\-runtime.\-Symbol cas.\-parser.\-Mata\-Parser.\-do\-\_\-action (
+\begin{DoxyParamCaption}
+\item[{int}]{act\-\_\-num, }
+\item[{java\-\_\-cup.\-runtime.\-lr\-\_\-parser}]{parser, }
+\item[{java.\-util.\-Stack}]{stack, }
+\item[{int}]{top}
+\end{DoxyParamCaption}
+)  throws java.\-lang.\-Exception   }}\label{classcas_1_1parser_1_1_mata_parser_a631f41c676b2dcfa2701415af0511a66}
+Invoke a user supplied parse action. \hypertarget{classcas_1_1parser_1_1_mata_parser_a00bca4ca9c3fbe57168ad73d34fb832e}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!E\-O\-F\-\_\-sym@{E\-O\-F\-\_\-sym}}
+\index{E\-O\-F\-\_\-sym@{E\-O\-F\-\_\-sym}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{E\-O\-F\-\_\-sym}]{\setlength{\rightskip}{0pt plus 5cm}int cas.\-parser.\-Mata\-Parser.\-E\-O\-F\-\_\-sym (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a00bca4ca9c3fbe57168ad73d34fb832e}
+{\ttfamily E\-O\-F} Symbol index. \hypertarget{classcas_1_1parser_1_1_mata_parser_a79eefa539efa888039725c1da054a785}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!error\-\_\-sym@{error\-\_\-sym}}
+\index{error\-\_\-sym@{error\-\_\-sym}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{error\-\_\-sym}]{\setlength{\rightskip}{0pt plus 5cm}int cas.\-parser.\-Mata\-Parser.\-error\-\_\-sym (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a79eefa539efa888039725c1da054a785}
+{\ttfamily error} Symbol index. \hypertarget{classcas_1_1parser_1_1_mata_parser_af819a65de07bd194e287e95b376dbfdb}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!get\-Assembly@{get\-Assembly}}
+\index{get\-Assembly@{get\-Assembly}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{get\-Assembly}]{\setlength{\rightskip}{0pt plus 5cm}Code\-List cas.\-parser.\-Mata\-Parser.\-get\-Assembly (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_af819a65de07bd194e287e95b376dbfdb}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_a196439f847bfa1e4d791265dbf858cda}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!init\-\_\-actions@{init\-\_\-actions}}
+\index{init\-\_\-actions@{init\-\_\-actions}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{init\-\_\-actions}]{\setlength{\rightskip}{0pt plus 5cm}void cas.\-parser.\-Mata\-Parser.\-init\-\_\-actions (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classcas_1_1parser_1_1_mata_parser_a196439f847bfa1e4d791265dbf858cda}
+Action encapsulation object initializer. \hypertarget{classcas_1_1parser_1_1_mata_parser_a3b553b038bc42f727b448c7b5c5468fb}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!production\-\_\-table@{production\-\_\-table}}
+\index{production\-\_\-table@{production\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{production\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}short \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} cas.\-parser.\-Mata\-Parser.\-production\-\_\-table (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a3b553b038bc42f727b448c7b5c5468fb}
+Access to production table. \hypertarget{classcas_1_1parser_1_1_mata_parser_a2bbee0284ae11462dae502564442206a}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!reduce\-\_\-table@{reduce\-\_\-table}}
+\index{reduce\-\_\-table@{reduce\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{reduce\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}short \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} cas.\-parser.\-Mata\-Parser.\-reduce\-\_\-table (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a2bbee0284ae11462dae502564442206a}
+Access to {\ttfamily reduce\-\_\-goto} table. \hypertarget{classcas_1_1parser_1_1_mata_parser_ac30546d72f0e661426605ecdb1a64693}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!start\-\_\-production@{start\-\_\-production}}
+\index{start\-\_\-production@{start\-\_\-production}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{start\-\_\-production}]{\setlength{\rightskip}{0pt plus 5cm}int cas.\-parser.\-Mata\-Parser.\-start\-\_\-production (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_ac30546d72f0e661426605ecdb1a64693}
+Indicates start production. \hypertarget{classcas_1_1parser_1_1_mata_parser_a3dc5d030c718f44ad6c3dc5396b952a2}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!start\-\_\-state@{start\-\_\-state}}
+\index{start\-\_\-state@{start\-\_\-state}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{start\-\_\-state}]{\setlength{\rightskip}{0pt plus 5cm}int cas.\-parser.\-Mata\-Parser.\-start\-\_\-state (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcas_1_1parser_1_1_mata_parser_a3dc5d030c718f44ad6c3dc5396b952a2}
+Indicates start state. \hypertarget{classcas_1_1parser_1_1_mata_parser_a582ff46721e8dd7d33414e117b344cfb}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!user\-\_\-init@{user\-\_\-init}}
+\index{user\-\_\-init@{user\-\_\-init}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{user\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}void cas.\-parser.\-Mata\-Parser.\-user\-\_\-init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)  throws java.\-lang.\-Exception     }}\label{classcas_1_1parser_1_1_mata_parser_a582ff46721e8dd7d33414e117b344cfb}
+User initialization code. 
+
+\subsection{Member Data Documentation}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_a8d0afaf46e35b1827bb263d8d27bc747}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!\-\_\-action\-\_\-table@{\-\_\-action\-\_\-table}}
+\index{\-\_\-action\-\_\-table@{\-\_\-action\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{\-\_\-action\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}final short \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} cas.\-parser.\-Mata\-Parser.\-\_\-action\-\_\-table\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classcas_1_1parser_1_1_mata_parser_a8d0afaf46e35b1827bb263d8d27bc747}
+Parse-\/action table. \hypertarget{classcas_1_1parser_1_1_mata_parser_a4ef6a5f2a08db3c2e752b4fd24ac5dad}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!\-\_\-production\-\_\-table@{\-\_\-production\-\_\-table}}
+\index{\-\_\-production\-\_\-table@{\-\_\-production\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{\-\_\-production\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}final short cas.\-parser.\-Mata\-Parser.\-\_\-production\-\_\-table\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classcas_1_1parser_1_1_mata_parser_a4ef6a5f2a08db3c2e752b4fd24ac5dad}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+= 
+    unpackFromStrings(\textcolor{keyword}{new} String[] \{
+    \textcolor{stringliteral}{"\(\backslash\)000\(\backslash\)055\(\backslash\)000\(\backslash\)002\(\backslash\)002\(\backslash\)004\(\backslash\)000\(\backslash\)002\(\backslash\)002\(\backslash\)004\(\backslash\)000\(\backslash\)002\(\backslash\)014"} +
+    \textcolor{stringliteral}{"\(\backslash\)014\(\backslash\)000\(\backslash\)002\(\backslash\)004\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)010\(\backslash\)004\(\backslash\)000\(\backslash\)002\(\backslash\)010\(\backslash\)003"} +
+    \textcolor{stringliteral}{"\(\backslash\)000\(\backslash\)002\(\backslash\)007\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)007\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)007\(\backslash\)007\(\backslash\)000"} +
+    \textcolor{stringliteral}{"\(\backslash\)002\(\backslash\)015\(\backslash\)002\(\backslash\)000\(\backslash\)002\(\backslash\)007\(\backslash\)014\(\backslash\)000\(\backslash\)002\(\backslash\)011\(\backslash\)004\(\backslash\)000\(\backslash\)002"} +
+    \textcolor{stringliteral}{"\(\backslash\)016\(\backslash\)002\(\backslash\)000\(\backslash\)002\(\backslash\)011\(\backslash\)006\(\backslash\)000\(\backslash\)002\(\backslash\)005\(\backslash\)011\(\backslash\)000\(\backslash\)002\(\backslash\)005"} +
+    \textcolor{stringliteral}{"\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)006\(\backslash\)007\(\backslash\)000\(\backslash\)002\(\backslash\)006\(\backslash\)011\(\backslash\)000\(\backslash\)002\(\backslash\)003\(\backslash\)006"} +
+    \textcolor{stringliteral}{"\(\backslash\)000\(\backslash\)002\(\backslash\)003\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)003\(\backslash\)011\(\backslash\)000\(\backslash\)002\(\backslash\)003\(\backslash\)010\(\backslash\)000"} +
+    \textcolor{stringliteral}{"\(\backslash\)002\(\backslash\)003\(\backslash\)004\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002"} +
+    \textcolor{stringliteral}{"\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012"} +
+    \textcolor{stringliteral}{"\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005"} +
+    \textcolor{stringliteral}{"\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000"} +
+    \textcolor{stringliteral}{"\(\backslash\)002\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)004\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)004\(\backslash\)000\(\backslash\)002"} +
+    \textcolor{stringliteral}{"\(\backslash\)012\(\backslash\)005\(\backslash\)000\(\backslash\)002\(\backslash\)012\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)013\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)013"} +
+    \textcolor{stringliteral}{"\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)013\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)013\(\backslash\)003\(\backslash\)000\(\backslash\)002\(\backslash\)013\(\backslash\)006"} +
+    \textcolor{stringliteral}{""} \})
+\end{DoxyCode}
+Production table. \hypertarget{classcas_1_1parser_1_1_mata_parser_a15d061d34b6b6a927ca9b7c76799dbd7}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!\-\_\-reduce\-\_\-table@{\-\_\-reduce\-\_\-table}}
+\index{\-\_\-reduce\-\_\-table@{\-\_\-reduce\-\_\-table}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{\-\_\-reduce\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}final short \mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} cas.\-parser.\-Mata\-Parser.\-\_\-reduce\-\_\-table\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classcas_1_1parser_1_1_mata_parser_a15d061d34b6b6a927ca9b7c76799dbd7}
+{\ttfamily reduce\-\_\-goto} table. \hypertarget{classcas_1_1parser_1_1_mata_parser_aa3869480583db95ded43cab8a9e95076}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!action\-\_\-obj@{action\-\_\-obj}}
+\index{action\-\_\-obj@{action\-\_\-obj}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{action\-\_\-obj}]{\setlength{\rightskip}{0pt plus 5cm}C\-U\-P \${\bf Mata\-Parser} \$actions cas.\-parser.\-Mata\-Parser.\-action\-\_\-obj\hspace{0.3cm}{\ttfamily [protected]}}}\label{classcas_1_1parser_1_1_mata_parser_aa3869480583db95ded43cab8a9e95076}
+Instance of action encapsulation class. \hypertarget{classcas_1_1parser_1_1_mata_parser_aebf4da5991406e740a80f21a1d44b54f}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!instruction\-Array@{instruction\-Array}}
+\index{instruction\-Array@{instruction\-Array}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{instruction\-Array}]{\setlength{\rightskip}{0pt plus 5cm}Code\-List cas.\-parser.\-Mata\-Parser.\-instruction\-Array}}\label{classcas_1_1parser_1_1_mata_parser_aebf4da5991406e740a80f21a1d44b54f}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_a6b4855da7611e701e380aea7477fb48a}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!open\-Reg@{open\-Reg}}
+\index{open\-Reg@{open\-Reg}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{open\-Reg}]{\setlength{\rightskip}{0pt plus 5cm}Stack$<$ Integer $>$ cas.\-parser.\-Mata\-Parser.\-open\-Reg = new Stack$<$ Integer $>$()}}\label{classcas_1_1parser_1_1_mata_parser_a6b4855da7611e701e380aea7477fb48a}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_af7dd1bb4dc646c7df148a5ea60731f2d}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!partial\-Automata@{partial\-Automata}}
+\index{partial\-Automata@{partial\-Automata}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{partial\-Automata}]{\setlength{\rightskip}{0pt plus 5cm}Partial\-Automata cas.\-parser.\-Mata\-Parser.\-partial\-Automata}}\label{classcas_1_1parser_1_1_mata_parser_af7dd1bb4dc646c7df148a5ea60731f2d}
+\hypertarget{classcas_1_1parser_1_1_mata_parser_aba7f0d768253977ae41bdc34b9a35d22}{\index{cas\-::parser\-::\-Mata\-Parser@{cas\-::parser\-::\-Mata\-Parser}!sym\-Stack@{sym\-Stack}}
+\index{sym\-Stack@{sym\-Stack}!cas::parser::MataParser@{cas\-::parser\-::\-Mata\-Parser}}
+\subsubsection[{sym\-Stack}]{\setlength{\rightskip}{0pt plus 5cm}Symbol\-Stack cas.\-parser.\-Mata\-Parser.\-sym\-Stack = new Symbol\-Stack()}}\label{classcas_1_1parser_1_1_mata_parser_aba7f0d768253977ae41bdc34b9a35d22}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+cas/parser/\hyperlink{_mata_parser_8java}{Mata\-Parser.\-java}\end{DoxyCompactItemize}
