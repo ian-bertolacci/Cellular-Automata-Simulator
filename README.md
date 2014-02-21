@@ -120,8 +120,8 @@ in the future. <br />
 That said, here is the most basic tutorial on how the module can be utilized.
 
 A most basic program would be this: <br />
-<code>
-public class CASTest1{
+```java
+public class CASTest1{ 
 	public static void main(String[] args){
 		
 		// Instantiate the compiler, given the file to compile
@@ -173,7 +173,7 @@ public class CASTest1{
 		
 	}
 }
-</code>
+```
 
 As more features, and as the interface is ironed out, more will be placed here,
 but, unfortunately, for now, this will have to suffice.
