@@ -254,7 +254,7 @@ public class OptionsWindow extends JFrame {
 		public void run(){
 	    	stop = false;			
 	    	for( int i = 0; i < steps; ++i){
-	    		System.out.println(i);
+	    		//System.out.println(i);
 	    		PaintThread thread = new PaintThread( this.repaint, this.sleep );
 	    		thread.run();
 	    		if( stop ){ 
