@@ -96,7 +96,7 @@ versions of the module:
 	+ CAS_CUP-runtime_include.jar: which is the base module, with the inclusion of the 
 java-cup run-time library as well, just to make running simpler <br />
 
-The Makefile has several options:
+The Makefile has several options: <br />
 	+ all: which creates both versions of the module <br />
 	+ CAS.jar: which creates the CAS.jar module  <br />
 	+ CAS_CUP-runtime_include.jar: which creates the CAS_CUP-runtime_include.jar module <br />
